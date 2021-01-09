@@ -1,4 +1,4 @@
-import gym 
+import gym
 import itertools 
 import matplotlib 
 import matplotlib.style 

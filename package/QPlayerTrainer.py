@@ -9,17 +9,17 @@ class QPlayer(SiteLocationPlayer):
    def place_stores(self, slmap: SiteLocationMap, 
                      store_locations: Dict[int, List[Store]],
                      current_funds: float):
-    
+    store_conf = self.config['store_config']
     #1 -----Find list of best choices randomly---
 
     #NEEED STORE TYPE
     # Choose largest store type possible:
-        if current_funds >= store_conf['large']['capital_cost']:
-            store_type = 'large'
-        elif current_funds >= store_conf['medium']['capital_cost']:
-            store_type = 'medium'
-        else:
-            store_type = 'small'
+    if current_funds >= store_conf['large']['capital_cost']:
+        store_type = 'large'
+    elif current_funds >= store_conf['medium']['capital_cost']:
+        store_type = 'medium'
+    else:
+        store_type = 'small'
 
     #random 100 and find score
     sample_pos_and_scores = []
@@ -38,9 +38,11 @@ class QPlayer(SiteLocationPlayer):
     #sort and find max 10
     sorted_list=sorted(sample_pos_and_scores,key=lambda x: x[1], reverse=True)
     top_10= sorted_list[:9]
-    print (top_10)  
-    #2 -
-    #3
+    print (top_10) #tuple of a tuple  
+   
+    #2 - randomly choose 2 stores- temporary
+
+    #3 - build q table 
     #4
 
     return
