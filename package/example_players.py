@@ -5,6 +5,7 @@ import copy
 
 from site_location import SiteLocationPlayer, Store, SiteLocationMap, euclidian_distances, attractiveness_allocation
 
+
 class RandomPlayer(SiteLocationPlayer):
     """
     Player attempts to place the maximum stores, with each store type and
