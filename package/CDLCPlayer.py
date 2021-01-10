@@ -23,12 +23,24 @@ class CDLCPlayer(SiteLocationPlayer):
           store_type = 'small'
       
       #2-----Find the attractiveness values---
+      print('00')
       sample_pos = []
-      for x in range(10):
-        for y in range(10):
-          sample_pos.append((x*40,y*40))
+      if len(store_locations) < 2:
+        for i in range(100):
+            x = random.randint(0, slmap.size[0])
+            y = random.randint(0, slmap.size[1])
+            sample_pos.append((x,y))
+      else:
+        for i in range(100):
+            x = random.randint(0, slmap.size[0])
+            y = random.randint(0, slmap.size[1])
+            sample_pos.append((x,y))
+      print('00')
+
+      if len(store_locations) < 2:
+
       best_score = 0
-      best_pos = []
+      _pos = []
       score = []
       for pos in sample_pos:
         sample_store = Store(pos, store_type)
@@ -36,12 +48,17 @@ class CDLCPlayer(SiteLocationPlayer):
         temp_store_locations[self.player_id].append(sample_store)
         sample_alloc = attractiveness_allocation(slmap, temp_store_locations, store_conf)
         sample_score = (sample_alloc[self.player_id] * slmap.population_distribution).sum()
-
+        if len(store_locations) < 2:
+            if sample_score > best_score:
+                best_score = sample_score
+                _pos = [pos]
+            elif sample_score == best_score:
+                _pos.append(pos)
         best_pos.append(pos)
         score.append(sample_score)
       sorted_score = sorted(score) # sorted rewards
       sorted_10 = sorted_score[-11:-1]
-
+      print('oo')
       # Get the state and indices
       '''
       rewardfile = "data/q_rewards.txt"
@@ -69,13 +86,17 @@ class CDLCPlayer(SiteLocationPlayer):
       
       index0 = score.index(attract0)
       index1 = score.index(attract1)
-
+      print('oo')
       loc0 = best_pos[index0]
       loc1 = best_pos[index1]
-      loc = best_pos[score.index(max(attract0, attract1))]
-
+      loc = best_pos[score.index(min(attract0, attract1))]
+      '''
       if current_funds > (store_conf[store_type]['capital_cost'])*2:
         self.stores_to_place = [Store(loc0, store_type), Store(loc1, store_type)]
       else:
-        self.stores_to_place = [Store(loc, store_type)]
+        '''
+      print('oo')
+      if len(store_locations) < 2:
+        loc = _pos
+      self.stores_to_place = [Store(loc, store_type)]
       return
