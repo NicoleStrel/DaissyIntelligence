@@ -37,8 +37,6 @@ class CDLCPlayer(SiteLocationPlayer):
             sample_pos.append((x,y))
       print('00')
 
-      if len(store_locations) < 2:
-
       best_score = 0
       _pos = []
       score = []
