@@ -23,7 +23,6 @@ class CDLCPlayer(SiteLocationPlayer):
           store_type = 'small'
       
       #2-----Find the attractiveness values---
-      print('00')
       sample_pos = []
       num_stores = 0
       for player, player_stores in store_locations.items():
@@ -38,7 +37,6 @@ class CDLCPlayer(SiteLocationPlayer):
             x = random.randint(0, slmap.size[0])
             y = random.randint(0, slmap.size[1])
             sample_pos.append((x,y))
-      print('00')
 
       best_score = 0
       _pos = []
@@ -60,7 +58,6 @@ class CDLCPlayer(SiteLocationPlayer):
         score.append(sample_score)
       sorted_score = sorted(score) # sorted rewards
       sorted_10 = sorted_score[-11:-1]
-      print('oo')
       # Get the state and indices
       '''
       rewardfile = "data/q_rewards.txt"
@@ -87,7 +84,6 @@ class CDLCPlayer(SiteLocationPlayer):
       
       index0 = score.index(attract0)
       index1 = score.index(attract1)
-      print('oo')
       loc0 = best_pos[index0]
       loc1 = best_pos[index1]
       loc = best_pos[score.index(min(attract0, attract1))]
