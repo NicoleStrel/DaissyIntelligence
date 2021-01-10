@@ -4,45 +4,102 @@ import copy
 import random
 from site_location import SiteLocationPlayer, Store, SiteLocationMap, euclidian_distances, attractiveness_allocation
 
-
 class QPlayer(SiteLocationPlayer):
-   def place_stores(self, slmap: SiteLocationMap, 
+    def place_stores(self, slmap: SiteLocationMap, 
                      store_locations: Dict[int, List[Store]],
                      current_funds: float):
-    store_conf = self.config['store_config']
-    #1 -----Find list of best choices randomly---
 
-    #NEEED STORE TYPE
-    # Choose largest store type possible:
-    if current_funds >= store_conf['large']['capital_cost']:
-        store_type = 'large'
-    elif current_funds >= store_conf['medium']['capital_cost']:
-        store_type = 'medium'
-    else:
-        store_type = 'small'
+      store_conf = self.config['store_config']
+      
+      #1 ------------ build q table  --------------------
+      #find num stores on map
+      num_stores=0
+      for player, player_stores in store_locations.items():
+        num_stores= num_stores + len(player_stores)
+      print ("num stores",num_stores) 
+      
+      # read choices and top_10
+      file = open("data/Q_player_current_data.txt","r")
+      lines = file.readlines()
+      if (lines!= []):
+        indicies=lines[0].split(" ")
+        build_q_table(indicies[0], indicies[1], num_stores, current_funds)
+      file.close()
+     
+      #2 -----Find list of best choices randomly---
 
-    #random 100 and find score
-    sample_pos_and_scores = []
-    num_rand = 100
-    for i in range(num_rand):
-      x = random.randint(0, slmap.size[0])
-      y = random.randint(0, slmap.size[1])
-      pos=(x,y)
-      sample_store = Store(pos, store_type)
-      temp_store_locations = copy.deepcopy(store_locations)
-      temp_store_locations[self.player_id].append(sample_store)
-      sample_alloc = attractiveness_allocation(slmap, temp_store_locations, store_conf)
-      sample_score = (sample_alloc[self.player_id] * slmap.population_distribution).sum()
-      sample_pos_and_scores.append((pos,sample_score))
+      #NEEED STORE TYPE
+      # Choose largest store type possible:
+      if current_funds >= store_conf['large']['capital_cost']:
+          store_type = 'large'
+      elif current_funds >= store_conf['medium']['capital_cost']:
+          store_type = 'medium'
+      else:
+          store_type = 'small'
 
-    #sort and find max 10
-    sorted_list=sorted(sample_pos_and_scores,key=lambda x: x[1], reverse=True)
-    top_10= sorted_list[:9]
-    print (top_10) #tuple of a tuple  
-   
-    #2 - randomly choose 2 stores- temporary
+      #random 100 and find score
+      sample_pos_and_scores = []
+      num_rand = 100
+      attractives=[]
+      for i in range(num_rand):
+        x = random.randint(0, slmap.size[0])
+        y = random.randint(0, slmap.size[1])
+        pos=(x,y)
+        sample_store = Store(pos, store_type)
+        temp_store_locations = copy.deepcopy(store_locations)
+        temp_store_locations[self.player_id].append(sample_store)
+        sample_alloc = attractiveness_allocation(slmap, temp_store_locations, store_conf)
+        sample_score = (sample_alloc[self.player_id] * slmap.population_distribution).sum()
+        sample_pos_and_scores.append((pos,sample_score))
 
-    #3 - build q table 
-    #4
+      #sort and find max 10
+      sorted_list=sorted(sample_pos_and_scores,key=lambda x: x[1], reverse=True)
+      top_10= sorted_list[:9]
+      #print (top_10) #tuple of a tuple  
+      
+      #3 - randomly choose 2 stores- temporary
+      choices = random.sample(top_10, 2)
+      index1 = top_10.index(choices[0])
+      index2 = top_10.index(choices[1])
 
+      # write choices and top_10
+      f = open("data/Q_player_current_data.txt","w")
+      f.write (str(index1) +' '+ str(index2))
+      f.close()
+
+      #4 - make selection
+      # sample_score <- close to each other, not give right value, doesn't account for overlap
+      if choices[0][1]+ choices[1][1] > current_funds: 
+        print("only 1") 
+        #make most attractive selection
+        if (choices[0][1]>=choices[1][1]):
+          self.stores_to_place = [Store(choices[0][0], store_type)]
+        else:
+          self.stores_to_place = [Store(choices[1][0], store_type)]
+      else: #make both selections
+          print("both")
+          selection.append(Store(choices[0][0], store_type))
+          selection.append(Store(choices[1][0], store_type))
+          self.stores_to_place = selection
+      return
+
+
+def build_q_table(index1, index2, num_of_stores, current_funds):
+    action = [index1, index2]
+    state = num_of_stores
+    reward = current_funds
+    qstates = open("data/q_states.txt", "a")
+    qstates.write(str(state))
+    qstates.write("\n")
+    qstates.close()
+
+    qaction = open("data/q_actions.txt", "a")
+    qaction.write(" ".join(action))
+    qaction.write("\n")
+    qaction.close()
+
+    qreward = open("data/q_rewards.txt", "a")
+    qreward.write(str(reward))
+    qreward.write("\n")
+    qreward.close()
     return
