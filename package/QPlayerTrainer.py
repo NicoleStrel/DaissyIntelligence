@@ -3,6 +3,7 @@ from typing import List, Dict, Optional, Tuple
 import copy
 import random
 import os
+import math
 from site_location import SiteLocationPlayer, Store, SiteLocationMap, euclidian_distances, attractiveness_allocation
 
 #https://repl.it/join/rqtofedp-nicole799
@@ -56,10 +57,26 @@ class QPlayer(SiteLocationPlayer):
 
       #sort and find max 10
       sorted_list=sorted(sample_pos_and_scores,key=lambda x: x[1], reverse=True)
+      end=9
+      top_10= sorted_list[:end]
+      '''
       #throw away points that are in store_type range from each other
-      
-
-      top_10= sorted_list[:9]
+      indicies=[]
+      for i in range(0, len(top_10)):
+        for j in range(0, len(top_10)):
+          if j not in indicies:
+            distance=euclidean_distance(top_10[i][0], top_10[j][0])
+            if (distance < store_conf[store_type]['attractiveness']/2):
+              indicies.append(j)
+              break #look at next pair 
+ 
+      #remove indicies
+      end=end+1
+      for idx in indicies:
+        top_10.pop(idx)
+        top_10.append(sorted_list[end])
+        end=end+1
+      '''
       #print (top_10) #tuple of a tuple  
       
       #3 - randomly choose 2 stores- temporary
@@ -88,6 +105,8 @@ class QPlayer(SiteLocationPlayer):
           self.stores_to_place = selection
       return
 
+def euclidean_distance (p1, p2):
+    return math.sqrt(((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2) )
 
 def build_q_table(index1, index2, num_of_stores, current_funds):
     action = [index1, index2]
