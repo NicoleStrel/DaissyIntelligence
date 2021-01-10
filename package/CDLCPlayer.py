@@ -25,8 +25,10 @@ class CDLCPlayer(SiteLocationPlayer):
       #2-----Find the attractiveness values---
       print('00')
       sample_pos = []
+      print(len(store_location))
       if len(store_locations) < 2:
-        for i in range(100):
+        print(len(store_location))
+        for i in range(400):
             x = random.randint(0, slmap.size[0])
             y = random.randint(0, slmap.size[1])
             sample_pos.append((x,y))
@@ -39,6 +41,7 @@ class CDLCPlayer(SiteLocationPlayer):
 
       best_score = 0
       _pos = []
+      best_pos = []
       score = []
       for pos in sample_pos:
         sample_store = Store(pos, store_type)
