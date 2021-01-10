@@ -52,8 +52,8 @@ class CDLCPlayer(SiteLocationPlayer):
       actions = action_values(actionfile)
       q_table = q_table(states, actions, rewards)
       '''
-
-      ansFile = open("data/MLdata.txt", 'r')
+      #file = open(os.path.join(os.path.dirname(__file__),"data/Q_player_current_data.txt"),"r")
+      ansFile = open(os.path.join(os.path.dirname(__file__), "data/MLdata.txt"), 'r')
       lines = ansFile.readlines()
       # lines = data.split("\n")
       answer = {}
