@@ -2,7 +2,10 @@ import numpy as np
 from typing import List, Dict, Optional, Tuple
 import copy
 import random
+import os
 from site_location import SiteLocationPlayer, Store, SiteLocationMap, euclidian_distances, attractiveness_allocation
+
+#https://repl.it/join/rqtofedp-nicole799
 
 class QPlayer(SiteLocationPlayer):
     def place_stores(self, slmap: SiteLocationMap, 
@@ -19,15 +22,14 @@ class QPlayer(SiteLocationPlayer):
       print ("num stores",num_stores) 
       
       # read choices and top_10
-      file = open("data/Q_player_current_data.txt","r")
+      file = open(os.path.join(os.path.dirname(__file__),"data/Q_player_current_data.txt"),"r")
       lines = file.readlines()
       if (lines!= []):
         indicies=lines[0].split(" ")
-        build_q_table(indicies[0], indicies[1], num_stores, current_funds)
+        build_q_table(indicies[0], indicies[1], num_stores, current_funds) #for previous round
       file.close()
      
       #2 -----Find list of best choices randomly---
-
       #NEEED STORE TYPE
       # Choose largest store type possible:
       if current_funds >= store_conf['large']['capital_cost']:
@@ -54,6 +56,9 @@ class QPlayer(SiteLocationPlayer):
 
       #sort and find max 10
       sorted_list=sorted(sample_pos_and_scores,key=lambda x: x[1], reverse=True)
+      #throw away points that are in store_type range from each other
+      
+
       top_10= sorted_list[:9]
       #print (top_10) #tuple of a tuple  
       
@@ -63,7 +68,7 @@ class QPlayer(SiteLocationPlayer):
       index2 = top_10.index(choices[1])
 
       # write choices and top_10
-      f = open("data/Q_player_current_data.txt","w")
+      f = open(os.path.join(os.path.dirname(__file__),"data/Q_player_current_data.txt"),"w")
       f.write (str(index1) +' '+ str(index2))
       f.close()
 
@@ -88,17 +93,17 @@ def build_q_table(index1, index2, num_of_stores, current_funds):
     action = [index1, index2]
     state = num_of_stores
     reward = current_funds
-    qstates = open("data/q_states.txt", "a")
+    qstates = open(os.path.join(os.path.dirname(__file__),"data/q_states.txt"), "a")
     qstates.write(str(state))
     qstates.write("\n")
     qstates.close()
 
-    qaction = open("data/q_actions.txt", "a")
+    qaction = open(os.path.join(os.path.dirname(__file__),"data/q_actions.txt"), "a")
     qaction.write(" ".join(action))
     qaction.write("\n")
     qaction.close()
 
-    qreward = open("data/q_rewards.txt", "a")
+    qreward = open(os.path.join(os.path.dirname(__file__),"data/q_rewards.txt"), "a")
     qreward.write(str(reward))
     qreward.write("\n")
     qreward.close()

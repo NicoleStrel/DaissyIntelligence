@@ -36,7 +36,7 @@ def q_table(states, actions, rewards):
   q_table = []
   for i in range(len(states)):
     new_data = [states[i], actions[i], rewards[i]]
-    q_table[i].append(new_data)
+    q_table.append(new_data)
   return q_table
 
 def process_data(q_table):
@@ -58,7 +58,7 @@ def process_data(q_table):
       else:
         sub_dict[thing[0]].append(thing[1])
       #sub_dict = {reward: [], [], reward: [], []}
-    indices_for_state = def find_two_indicies_for_state(sub_dict)
+    indices_for_state = find_two_indicies_for_state(sub_dict)
     answers.update({key1: indicies_for_state})
   return answers
 
