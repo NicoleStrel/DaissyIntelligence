@@ -25,9 +25,10 @@ class CDLCPlayer(SiteLocationPlayer):
       #2-----Find the attractiveness values---
       print('00')
       sample_pos = []
-      print(len(store_location))
-      if len(store_locations) < 2:
-        print(len(store_location))
+      num_stores = 0
+      for player, player_stores in store_locations.items():
+        num_stores= num_stores + len(player_stores)
+      if num_stores < 2:
         for i in range(400):
             x = random.randint(0, slmap.size[0])
             y = random.randint(0, slmap.size[1])
@@ -49,7 +50,7 @@ class CDLCPlayer(SiteLocationPlayer):
         temp_store_locations[self.player_id].append(sample_store)
         sample_alloc = attractiveness_allocation(slmap, temp_store_locations, store_conf)
         sample_score = (sample_alloc[self.player_id] * slmap.population_distribution).sum()
-        if len(store_locations) < 2:
+        if num_stores < 2:
             if sample_score > best_score:
                 best_score = sample_score
                 _pos = [pos]
@@ -80,8 +81,7 @@ class CDLCPlayer(SiteLocationPlayer):
         answer[int(num[0])]=[int(num[1]), int(num[2])]
 
       # Get indicies
-      stores_num = len(store_locations)
-      indices = answer[stores_num] # [2, 3]
+      indices = answer[num_stores] # [2, 3]
       attract0 = sorted_10[indices[0]] #top 1 score
       attract1 = sorted_10[indices[1]] #top 2 score
       
@@ -97,7 +97,11 @@ class CDLCPlayer(SiteLocationPlayer):
       else:
         '''
       print('oo')
-      if len(store_locations) < 2:
-        loc = _pos
+      print(num_stores)
+      if num_stores < 2:
+        loc = _pos[0]
+      print(_pos)
+      print('k')
+      print(loc)
       self.stores_to_place = [Store(loc, store_type)]
       return

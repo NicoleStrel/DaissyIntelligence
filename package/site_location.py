@@ -395,9 +395,8 @@ class SiteLocationGame:
             if self.config["ignore_player_exceptions"]:
                 try:
                     player.place_stores(deepcopy(self.slmaps[-1]), 
-                                        self.store_locations[-2], 
+                                        deepcopy(self.store_locations[-2]), 
                                         prev_score)
-                    signal.alarm(0) # clear current alarm
                 except PlayerTimedOutError:
                     log.warn(f"Player {player.name} timed out placing stores")
                     self.timeouts += 1
@@ -407,9 +406,12 @@ class SiteLocationGame:
                     new_stores = []
             else:
                 player.place_stores(deepcopy(self.slmaps[-1]), 
-                                    self.store_locations[-2], 
+                                    deepcopy(self.store_locations[-2]), 
                                     prev_score)
+            try:
                 signal.alarm(0) # clear current alarm
+            except AttributeError:
+                pass
 
             elapsed = time.time() - start_time
             if elapsed > self.config["place_stores_time_s"]:
@@ -626,4 +628,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
