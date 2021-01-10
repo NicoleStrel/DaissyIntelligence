@@ -96,12 +96,7 @@ class CDLCPlayer(SiteLocationPlayer):
         self.stores_to_place = [Store(loc0, store_type), Store(loc1, store_type)]
       else:
         '''
-      print('oo')
-      print(num_stores)
       if num_stores < 2:
         loc = _pos[0]
-      print(_pos)
-      print('k')
-      print(loc)
       self.stores_to_place = [Store(loc, store_type)]
       return
